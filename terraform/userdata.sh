@@ -5,9 +5,9 @@ set -euo pipefail
 
 # VARIABLES (parameterize)
 
-KOPS_CLUSTER_NAME=${KOPS_CLUSTER_NAME:-alasoasiko.co.uk}
-KOPS_STATE_STORE=${KOPS_STATE_STORE:-s3://ecommerce-project}
-AWS_REGION=${AWS_REGION:-eu-west-2}
+# KOPS_CLUSTER_NAME=${KOPS_CLUSTER_NAME:-ecommerce.alasoasiko.co.uk}
+# KOPS_STATE_STORE=${KOPS_STATE_STORE:-s3://ecommerce-kops-state-1232}
+# AWS_REGION=${AWS_REGION:-eu-west-2}
 ISTIO_VERSION=${ISTIO_VERSION:-1.24.2}
 HOME_DIR=/home/ubuntu
 
@@ -66,19 +66,4 @@ curl -L https://istio.io/downloadIstio | ISTIO_VERSION=$ISTIO_VERSION sh -
 sudo chown -R ubuntu:ubuntu istio-$ISTIO_VERSION
 echo "export PATH=/opt/istio/istio-$ISTIO_VERSION/bin:\$PATH" >> $HOME_DIR/.bashrc
 export PATH=/opt/istio/istio-$ISTIO_VERSION/bin:$PATH
-
-
-# SET ENVIRONMENT VARIABLES
-
-echo "export NAME=$KOPS_CLUSTER_NAME" >> $HOME_DIR/.bashrc
-echo "export KOPS_STATE_STORE=$KOPS_STATE_STORE" >> $HOME_DIR/.bashrc
-echo "export AWS_REGION=$AWS_REGION" >> $HOME_DIR/.bashrc
-export NAME=$KOPS_CLUSTER_NAME
-export KOPS_STATE_STORE=$KOPS_STATE_STORE
-export AWS_REGION=$AWS_REGION
-
-
-# SSH KEY SETUP
-
-sudo -u ubuntu ssh-keygen -t rsa -m PEM -N "" -f $HOME_DIR/.ssh/id_rsa
 

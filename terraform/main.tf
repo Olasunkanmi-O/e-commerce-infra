@@ -54,6 +54,14 @@ resource "aws_security_group" "kops_sg" {
     cidr_blocks = ["0.0.0.0/0"] # Allow outbound to anywhere
   }
 
+  # Ingress rule: Allow inbound ssh traffic
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"          
+    cidr_blocks = ["0.0.0.0/0"] # Allow outbound to anywhere
+  }
+
   tags = {
     Name = "${local.name}-sg"
   }
@@ -77,6 +85,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "kops" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.medium"
+  key_name                    = aws_key_pair.generated_key.key_name
   subnet_id                   = module.vpc.public_subnets[0]
   associate_public_ip_address = true
   user_data                   = file("userdata.sh")
@@ -92,6 +101,22 @@ resource "aws_instance" "kops" {
   }
 }
 
+resource "tls_private_key" "kops_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "generated_key" {
+  key_name   = "my-generated-key"
+  public_key = tls_private_key.kops_key.public_key_openssh
+}
+
+# Optional: save the private key to a file
+resource "local_file" "private_key" {
+  content  = tls_private_key.kops_key.private_key_pem
+  filename = "${path.module}/my-generated-key.pem"
+  file_permission = "0600"
+}
 
 #SSM policy 
 # create an IAM instance role

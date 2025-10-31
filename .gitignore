@@ -2,3 +2,4 @@
 .terraform.*
 
 jenkins/jenkins-key.pem
+*.pem

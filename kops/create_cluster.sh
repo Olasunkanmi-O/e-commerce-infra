@@ -1,9 +1,7 @@
 #!/bin/bash
 set -e
 
-# KOPS_STATE_STORE = "s3://ecommerce-kops-state-1232"
-# CLUSTER_NAME = "ecommerce.alasoasiko.co.uk"
-# DNS_ZONE = "ecommerce.alasoasiko.co.uk"
+
 
 KOPS_STATE_STORE=${KOPS_STATE_STORE:-s3://ecommerce-kops-state-1232}
 CLUSTER_NAME=${CLUSTER_NAME:-ecommerce.alasoasiko.co.uk}
@@ -28,7 +26,7 @@ kops create cluster \
   --zones=$ZONES \
   --node-count=$NODE_COUNT \
   --node-size=$NODE_SIZE \
-  --master-size=$MASTER_SIZE \
+  --control-plane-size=$MASTER_SIZE \
   --dns-zone=$DNS_ZONE \
   --ssh-public-key=$SSH_KEY_PATH \
   --yes
